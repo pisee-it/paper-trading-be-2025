@@ -1,0 +1,54 @@
+# ==========================================
+# 1. SERVER CONFIGURATION
+# ==========================================
+server:
+  port: 8080                        # Cổng chạy ứng dụng (Mặc định là 8080)
+#  servlet:
+#    context-path: /api              # Prefix cho toàn bộ API. Ví dụ: localhost:8080/api/auth/login
+
+# ==========================================
+# 2. SPRING CORE & DATABASE
+# ==========================================
+spring:
+  application:
+    name: PiSeeTrading
+  # Cấu hình kết nối PostgreSQL
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db_paper_trading_pisee
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  # Cấu hình JPA / Hibernate (ORM)
+  jpa:
+    # update: Tự động cập nhật schema DB khi sửa code Java (Dùng cho giai đoạn Dev)
+    # validate: Chỉ kiểm tra, không sửa DB (Dùng cho Production)
+    hibernate:
+      ddl-auto: update
+
+    # Hiển thị câu lệnh SQL trong Console để dễ debug
+    show-sql: true
+
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect # Giúp Hibernate tối ưu câu lệnh cho Postgres
+        format_sql: true            # Format câu SQL cho đẹp và dễ đọc hơn
+
+    # Tắt Open Session In View để tránh lỗi query ngầm và tăng hiệu năng
+    open-in-view: false
+
+# ==========================================
+# 3. CUSTOM CONFIGURATION (JWT)
+# ==========================================
+app:
+  jwt:
+    # Chuỗi bí mật dùng để ký Token.
+    # Lưu ý: Với thuật toán HS512, chuỗi này phải đủ dài (ít nhất 64 ký tự) để bảo mật.
+    # Bạn có thể random một chuỗi bất kỳ thật dài.
+    # Thực hiện tạo config/JwtProperties.java để hứng cấu hình secret và expiration
+    secret: ${SECRET_KEY}
+
+    # Thời gian hết hạn của Token (tính bằng mili-giây)
+    # 86400000 ms = 24 giờ.
+    # Thực hiện tạo config/JwtProperties.java để hứng cấu hình secret và expiration
+    expiration: 86400000

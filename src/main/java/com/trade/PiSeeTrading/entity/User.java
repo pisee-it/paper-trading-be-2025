@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -53,8 +54,6 @@ public class User {
 
     // QUAN HỆ VỚI WALLET (Tạm thời comment lại để code không báo lỗi vì chưa có class Wallet)
     // Sau khi tạo class Wallet xong, chúng ta sẽ mở comment này ra.
-    /*
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Wallet> wallets;
-    */
+    List<Wallet> wallets;
 }

@@ -46,7 +46,9 @@ public class SecurityConfig {
     AuthEntryPointJwt unauthorizedHandler;
     JwtUtils jwtUtils;
 
-    @Bean
+//    @Bean
+    // Xoá bean ở đây (do gây lỗi khi gọi init-wallet)
+    // Lý do: Nếu để @Bean, Spring Boot tự động chạy Filternày ở Global Scope & gây xung đột với Security Chain. Ta chỉ muốn add thủ công ở dưới.
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter(jwtUtils, userDetailsService);
     }
@@ -83,6 +85,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Cho phép truy cập công khai vào API Login/Register
                         .requestMatchers("/api/test/**").permitAll() // Cho phép test api (nếu có)
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll() // Mở Swagger
                         .anyRequest().authenticated()); // Tất cả API khác đều phải có Token mới được vào
 
         // Thêm Provider

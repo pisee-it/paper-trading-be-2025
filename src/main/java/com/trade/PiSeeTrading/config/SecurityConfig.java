@@ -85,6 +85,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Cho phép truy cập công khai vào API Login/Register
                         .requestMatchers("/api/test/**").permitAll() // Cho phép test api (nếu có)
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll() // Mở Swagger
                         .anyRequest().authenticated()); // Tất cả API khác đều phải có Token mới được vào
 
         // Thêm Provider

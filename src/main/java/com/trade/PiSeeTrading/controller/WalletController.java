@@ -3,6 +3,7 @@ package com.trade.PiSeeTrading.controller;
 import com.trade.PiSeeTrading.dto.response.WalletResponse;
 import com.trade.PiSeeTrading.security.services.UserDetailsImpl;
 import com.trade.PiSeeTrading.service.impl.WalletServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,6 +22,7 @@ import java.util.List;
 @RequestMapping("/api/wallets")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Tag(name = "Wallet Management", description = "APIs for managing user wallets") // Tên nhóm API (Swagger)
 public class WalletController {
 
     WalletServiceImpl walletService;

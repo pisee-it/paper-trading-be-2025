@@ -50,5 +50,5 @@ app:
 
     # Thời gian hết hạn của Token (tính bằng mili-giây)
     # 86400000 ms = 24 giờ.
-    # Thực hiện tạo config/JwtProperties.java để hứng cấu hình secret và expiration
+    # Thực hiện tạo config/JwtProperties.java để hứng cấu hình secret và expiration     > git commit -m "feat: implement data layer with entity & repo & resp"
     expiration: 86400000

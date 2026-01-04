@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class JwtResponse {
+public class AuthResponse {
     String token;
     String type = "Bearer";
 
@@ -19,7 +19,7 @@ public class JwtResponse {
     String email;
     String role; // trả về role để frontend biết điều hướng (admin/user)
 
-    public JwtResponse(String token, Long id, String username, String email, String role) {
+    public AuthResponse(String token, Long id, String username, String email, String role) {
         this.token = token;
         this.id = id;
         this.username = username;

@@ -41,24 +41,28 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
             // Nếu có JWT và JWT hợp lệ
             if (jwt != null && jwtUtils.validateJwtToken(jwt)){
-                // Lấy thông tin user đầy đủ từ Database
+                // Lấy thông tin username từ token
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
 
-                // Lấy thông tin user đầy đủ từ Database
+                // Lấy thông tin user đầy đủ trong db từ UserDetails
                 UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(username);
 
-                // Tạo object Authentication để thông báo cho Spring Security
+                // Tạo object Authentication để thông báo cho Spring Security, đại diện cho user đã đăng nhập thành công
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,
                                 null,
                                 userDetails.getAuthorities());
 
+                // WebAuthenticationDetails, bên trong gồm: remoteAddress (IP Client) & sessionId
+                // Phục vụ logging / audit, Chặn login nếu IP lạ, Chặn nếu session không hợp lệ, Phục vụ rate-limit, chống brute-force
+                // Một số Filter / Handler trong Spring Security sẽ đọc details
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 // LƯU THÔNG TIN USER VÀO SECURITY CONTEXT (QUAN TRỌNG NHẤT)
                 // Từ giờ trở đi, Spring Security biết user này đã login.
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication); // Gắn người dùng đã xác thực vào request hiện tại
+                                                                                      // SecurityContext = hồ sơ bảo mật của request này
             }
         } catch (Exception e) {
             log.error("Cannot set user authentication", e);
@@ -70,9 +74,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     private String parseJwt(HttpServletRequest request){
         String headerAuth = request.getHeader("Authorization");
+
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
             return headerAuth.substring(7); // Cắt bỏ chữ "Bearer " để lấy token
         }
+
         return null;
     }
 }

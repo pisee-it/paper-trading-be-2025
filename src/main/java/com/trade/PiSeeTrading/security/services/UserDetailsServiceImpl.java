@@ -36,3 +36,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
  *
  * Nếu có lỗi, toàn bộ thay đổi sẽ được rollback (hoàn tác).
  */
+
+/**
+ * Nhiệm vụ:
+ *
+ * Lấy user từ DB
+ *
+ * Convert sang UserDetails
+ *
+ * 📌 Spring Security KHÔNG QUAN TÂM DB
+ * → Bạn tự viết
+ */

@@ -46,7 +46,13 @@ public class SecurityConfig {
     AuthEntryPointJwt unauthorizedHandler;
     JwtUtils jwtUtils;
 
+<<<<<<< Updated upstream
     @Bean
+=======
+//    @Bean
+    // Xoá bean ở đây (do gây lỗi khi gọi init-wallet)
+    // Lý do: Nếu để @Bean, Spring Boot tự động chạy Filter này ở Global Scope & gây xung đột với Security Chain. Ta chỉ muốn add thủ công ở dưới.
+>>>>>>> Stashed changes
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter(jwtUtils, userDetailsService);
     }
@@ -62,7 +68,10 @@ public class SecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 
-    // Cấu hình Provider - Liên kết UserDetailsServiceImpl ới PasswordEncoder
+    // Cấu hình Provider - Liên kết UserDetailsServiceImpl với PasswordEncoder
+    // Nhiệm vụ của Provider:
+    // - Lấy thông tin User từ Database (qua UserDetailsService).
+    // - So sánh mật khẩu người dùng gửi lên với mật khẩu đã mã hóa trong DB (qua PasswordEncoder).
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider =
@@ -73,19 +82,20 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) {
         http
                 // 1. KÍCH HOẠT CORS: Dòng này cực kỳ quan trọng, nó báo cho Spring Security dùng cấu hình corsConfigurationSource bên dưới
+                // Cho phép Frontend có thể gọi được API của Backend
                 .cors(Customizer.withDefaults())
-                .csrf(csrf -> csrf.disable()) // tắt csrf vì đang dùng token (stateless)
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler)) // xử lý lỗi 401
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // không lưu session
+                .csrf(csrf -> csrf.disable()) // Tắt bảo vệ chống giả mạo request vì chúng ta dùng JWT (stateless), không dùng Session nên không sợ bị đánh cắp Cookie.
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler)) // xử lý lỗi 401, nếu User truy cập trái phép
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Chế độ "Không lưu dấu". Server sẽ không tạo Session, mỗi Request gửi lên đều phải kèm theo Token để định danh lại từ đầu.
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // Cho phép truy cập công khai vào API Login/Register
                         .requestMatchers("/api/test/**").permitAll() // Cho phép test api (nếu có)
                         .anyRequest().authenticated()); // Tất cả API khác đều phải có Token mới được vào
 
-        // Thêm Provider
+        // Thêm Provider: là "Người xác thực danh tính", giống Giao dịch viên ở ngân hàng
         http.authenticationProvider(authenticationProvider());
 
         // Thêm Filter của chúng ta trước UsernamePasswordAuthenticationFilter của Spring

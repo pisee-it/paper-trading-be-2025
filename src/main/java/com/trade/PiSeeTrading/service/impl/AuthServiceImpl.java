@@ -2,7 +2,7 @@ package com.trade.PiSeeTrading.service.impl;
 
 import com.trade.PiSeeTrading.dto.request.LoginRequest;
 import com.trade.PiSeeTrading.dto.request.RegisterRequest;
-import com.trade.PiSeeTrading.dto.response.JwtResponse;
+import com.trade.PiSeeTrading.dto.response.AuthResponse;
 import com.trade.PiSeeTrading.entity.User;
 import com.trade.PiSeeTrading.entity.UserRole;
 import com.trade.PiSeeTrading.repository.UserRepository;
@@ -29,9 +29,9 @@ public class AuthServiceImpl implements AuthService {
     JwtUtils jwtUtils;
 
     @Override
-    public void registerUser(RegisterRequest registerRequest) {
+    public void register(RegisterRequest registerRequest) {
         // Kiểm tra tồn tại
-        if (userRepository.existsByUsername(registerRequest.getUsername())){
+        if (Boolean.TRUE.equals(userRepository.existsByUsername(registerRequest.getUsername()))){
             throw new RuntimeException("Username is already in use");
         }
         else if (userRepository.existsByEmail(registerRequest.getEmail())){
@@ -56,13 +56,15 @@ public class AuthServiceImpl implements AuthService {
 
     // Đăng nhập
     @Override
-    public JwtResponse authenticateUser(LoginRequest loginRequest) {
+    public AuthResponse login(LoginRequest loginRequest) {
+
         // Xác thực qua Spring Security
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
         );
 
         // Nếu login thành công, set vào context
+        // TODO: (có dấu hiệu thừa, bởi đã set trong AuthTokenFilter)
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // Sinh JWT Token
@@ -77,7 +79,7 @@ public class AuthServiceImpl implements AuthService {
                 .map(item -> item.getAuthority())
                 .orElse("ROLE_USER");
 
-        return new JwtResponse(jwt,
+        return new AuthResponse(jwt,
                                userDetails.getId(),
                                userDetails.getUsername(),
                                userDetails.getEmail(),

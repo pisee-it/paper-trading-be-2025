@@ -18,6 +18,7 @@ import java.util.Objects;
 //Vấn đề: Spring Security không biết class User của bạn là gì. Nó chỉ làm việc với một interface chuẩn có tên là UserDetails.
 //
 // Giải pháp: Chúng ta tạo một class UserDetailsImpl để "dịch" User của bạn sang ngôn ngữ mà Spring hiểu.
+// Đây là phiên bản bảo mật của User
 
 @Data
 @AllArgsConstructor
@@ -36,7 +37,8 @@ public class UserDetailsImpl implements UserDetails {
 
     // Hàm này dùng để convert từ Entity User sang UserDetailsImpl
     public static UserDetailsImpl build(User user){
-        // Convert Role (Enum) sang GrantedAuthority (chuẩn Spring) - GrantedAuthority là interface trong Spring Security đại diện cho quyền (role hoặc quyền hạn) mà một người dùng có
+        // Convert Role (Enum) sang GrantedAuthority (chuẩn Spring)
+        // GrantedAuthority là interface trong Spring Security đại diện cho quyền (role hoặc quyền hạn) mà một người dùng có
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole().name()));
 
         return new UserDetailsImpl(

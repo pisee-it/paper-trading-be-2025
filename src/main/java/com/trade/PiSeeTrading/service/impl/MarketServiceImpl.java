@@ -25,7 +25,7 @@ public class MarketServiceImpl implements MarketService {
 
     @Override
 //    @Cacheable(value = "cryptoPrices", key = "#coinIds[0]") // Cache kết quả - key đơn giản là phần tử đầu tiên (value: tên cache, key: )
-    @Cacheable(value = "cryptoPrices", key = "T(java.util.Arrays).toString(#coinIds)")
+    @Cacheable(value = "cryptoPrices", key = "#coinIds")
     public Map<String, BigDecimal> getCurrentPrice(String... coinIds) {
         log.info("--- [FACADE] Requesting prices for: {} ---", Arrays.toString(coinIds));
 

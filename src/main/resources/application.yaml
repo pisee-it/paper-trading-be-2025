@@ -52,3 +52,5 @@ app:
     # 86400000 ms = 24 giờ.
     # Thực hiện tạo config/JwtProperties.java để hứng cấu hình secret và expiration
     expiration: 86400000
+  coingecko:
+    url: ${COINGECKO_URL}

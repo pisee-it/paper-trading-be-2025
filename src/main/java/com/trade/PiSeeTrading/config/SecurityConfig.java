@@ -46,13 +46,9 @@ public class SecurityConfig {
     AuthEntryPointJwt unauthorizedHandler;
     JwtUtils jwtUtils;
 
-<<<<<<< Updated upstream
-    @Bean
-=======
 //    @Bean
     // Xoá bean ở đây (do gây lỗi khi gọi init-wallet)
     // Lý do: Nếu để @Bean, Spring Boot tự động chạy Filter này ở Global Scope & gây xung đột với Security Chain. Ta chỉ muốn add thủ công ở dưới.
->>>>>>> Stashed changes
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter(jwtUtils, userDetailsService);
     }
